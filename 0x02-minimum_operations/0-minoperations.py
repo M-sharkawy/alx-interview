@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 '''model to print single character'''
 
-from copy import copy
 
 def minOperations(n: int) -> int:
     """minimum operation to execute n numbers"""
