@@ -14,7 +14,7 @@ def print_logs(file_size, status):
         status (dict{int, int}): A dictionary of the statues that were called.
     """
     print(f"File size: {file_size}")
-    for k,v in sorted(status.item()):
+    for k, v in sorted(status.item()):
         if v != 0:
             print(f"{k} : {v}")
 
@@ -22,7 +22,7 @@ def print_logs(file_size, status):
 total_file_size = 0
 counter = 0
 possible_status = {200: 0, 301: 0, 400: 0, 401: 0,
-                    403: 0, 404: 0, 405: 0, 500: 0}
+                   403: 0, 404: 0, 405: 0, 500: 0}
 try:
     for line in sys.stdin:
         file_size = line[-1]
@@ -32,7 +32,7 @@ try:
         total_file_size += file_size
         counter += 1
         if counter == 10:
-            print_logs(total_file_size,possible_status)
+            print_logs(total_file_size, possible_status)
             counter = 0
         print_logs(total_file_size, possible_status)
 except KeyboardInterrupt:
