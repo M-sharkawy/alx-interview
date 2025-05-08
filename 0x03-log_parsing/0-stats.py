@@ -14,7 +14,7 @@ def print_logs(file_size, status):
         status (dict{int, int}): A dictionary of the statues that were called.
     """
     print(f"File size: {file_size}")
-    for k, v in sorted(status.item()):
+    for k, v in sorted(status.items()):
         if v != 0:
             print(f"{k} : {v}")
 
@@ -25,8 +25,9 @@ possible_status = {200: 0, 301: 0, 400: 0, 401: 0,
                    403: 0, 404: 0, 405: 0, 500: 0}
 try:
     for line in sys.stdin:
-        file_size = line[-1]
-        status_code = line[-2]
+        args = line.split()
+        file_size = int(args[-1])
+        status_code = int(args[-2])
         if status_code in possible_status:
             possible_status[status_code] += 1
         total_file_size += file_size
