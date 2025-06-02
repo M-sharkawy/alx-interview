@@ -1,42 +1,50 @@
 #!/usr/bin/python3
-"""A script that reads stdin line by line and computes metrics"""
+"""
+log parsing
+"""
 
 import sys
+import re
 
 
-def print_logs(file_size, status):
+def output(log: dict) -> None:
     """
-    This function takes the total file size and the
-    statues that were called and prints them.
-
-    Arguments:
-        file_size (int): The total file size to be printed.
-        status (dict{int, int}): A dictionary of the statues that were called.
+    helper function to display stats
     """
-    print(f"File size: {file_size}")
-    for k, v in sorted(status.items()):
-        if v != 0:
-            print(f"{k} : {v}")
+    print("File size: {}".format(log["file_size"]))
+    for code in sorted(log["code_frequency"]):
+        if log["code_frequency"][code]:
+            print("{}: {}".format(code, log["code_frequency"][code]))
 
 
-total_file_size = 0
-counter = 0
-possible_status = {200: 0, 301: 0, 400: 0, 401: 0,
-                   403: 0, 404: 0, 405: 0, 500: 0}
-try:
-    for line in sys.stdin:
-        args = line.split()
-        file_size = int(args[-1])
-        status_code = int(args[-2])
-        if status_code in possible_status:
-            possible_status[status_code] += 1
-        total_file_size += file_size
-        counter += 1
-        if counter == 10:
-            print_logs(total_file_size, possible_status)
-            counter = 0
-        print_logs(total_file_size, possible_status)
-except KeyboardInterrupt:
-    raise
-finally:
-    print_logs(total_file_size, possible_status)
+if __name__ == "__main__":
+    regex = re.compile(
+    r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d+\] "GET /projects/260 HTTP/1.1" (.{3}) (\d+)')  # nopep8
+
+    line_count = 0
+    log = {}
+    log["file_size"] = 0
+    log["code_frequency"] = {
+        str(code): 0 for code in [
+            200, 301, 400, 401, 403, 404, 405, 500]}
+
+    try:
+        for line in sys.stdin:
+            line = line.strip()
+            match = regex.fullmatch(line)
+            if (match):
+                line_count += 1
+                code = match.group(1)
+                file_size = int(match.group(2))
+
+                # File size
+                log["file_size"] += file_size
+
+                # status code
+                if (code.isdecimal()):
+                    log["code_frequency"][code] += 1
+
+                if (line_count % 10 == 0):
+                    output(log)
+    finally:
+        output(log)
