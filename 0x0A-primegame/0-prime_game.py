@@ -1,16 +1,19 @@
 #!/usr/bin/python3
 """Prime game module"""
 
+
 def isWinner(x, nums):
     """
     Determines the winner of the prime game.
 
     Args:
         x (int): Number of rounds.
-        nums (list): List of integers representing the number of marbles in each round.
+        nums (list): List of integers representing
+        the number of marbles in each round.
 
     Returns:
-        str: The name of the player who wins the most rounds, or None if there is no winner.
+        str: The name of the player who wins
+        the most rounds, or None if there is no winner.
     """
     if not nums or x < 1:
         return None
