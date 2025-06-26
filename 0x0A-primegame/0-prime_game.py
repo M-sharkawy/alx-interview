@@ -12,26 +12,30 @@ def isWinner(x, nums):
     Returns:
         str: The name of the player who wins the most rounds, or None if there is no winner.
     """
-    if not isinstance(x, int) or x <= 0 or not isinstance(nums, list) or not all(isinstance(n, int) and n > 0 for n in nums):
+    if not nums or x < 1:
         return None
 
-    def is_prime(n):
-        """Check if a number is prime."""
-        if n < 2:
-            return False
-        for i in range(2, int(n**0.5) + 1):
-            if n % i == 0:
-                return False
-        return True
+    max_n = max(nums)
 
-    primes = [i for i in range(2, max(nums) + 1) if is_prime(i)]
-    prime_set = set(primes)
+    is_prime = [True] * (max_n + 1)
+    is_prime[0:2] = [False, False]
+    for i in range(2, int(max_n ** 0.5) + 1):
+        if is_prime[i]:
+            for j in range(i * i, max_n + 1, i):
+                is_prime[j] = False
+
+    prime_count_up_to = [0] * (max_n + 1)
+    count = 0
+    for i in range(1, max_n + 1):
+        if is_prime[i]:
+            count += 1
+        prime_count_up_to[i] = count
 
     maria_wins = 0
     ben_wins = 0
 
     for n in nums:
-        if n in prime_set:
+        if prime_count_up_to[n] % 2 == 1:
             maria_wins += 1
         else:
             ben_wins += 1
